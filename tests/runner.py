@@ -165,7 +165,7 @@ class RegressionRunner(QThread):
         reply_logs = agent.handle("show recent logs")
         reply_search = agent.handle("search hello")
         return {
-            "passed": bool(reply_logs) and bool(reply_search),
+            "passed": bool(reply_logs.strip()) and bool(reply_search.strip()),
             "reply_logs": reply_logs[:200],
             "reply_search": reply_search[:200],
         }
@@ -250,11 +250,15 @@ class RegressionRunner(QThread):
         return {"passed": passed, "channels": [o.get("freq_hz") for o in outs]}
 
     def _scenario_whisper_available(self) -> Dict[str, Any]:
-        """Smoke-test transcriber init (skip if missing)."""
+        """Smoke-test transcriber init and text output (skip if missing)."""
         try:
             tr = Transcriber(model_size="tiny.en")
-            _ = tr.transcribe_audio(np.zeros(8000, dtype=np.float32), sample_rate=16000)
-            return {"passed": True}
+            txt = tr.transcribe_audio(np.zeros(8000, dtype=np.float32), sample_rate=16000)
+            if not isinstance(txt, str):
+                return {"passed": False, "error": "Whisper returned non-string"}
+            if not txt.strip():
+                return {"passed": True, "skipped": True, "reason": "Whisper returned empty text on silence"}
+            return {"passed": True, "text_sample": txt[:120]}
         except Exception as exc:
             return {"passed": True, "skipped": True, "reason": f"Whisper unavailable: {exc}"}
 
@@ -274,7 +278,7 @@ class RegressionRunner(QThread):
         )
         agent = RadioOpsAgent(controller=controller, transcript_index=transcript_idx)
         reply = agent.handle("scan 88 108 0.2 fm")
-        return {"passed": bool(reply), "reply": reply[:200]}
+        return {"passed": bool(reply.strip()), "reply": reply[:200]}
 
     # ---------- Runner ----------
 

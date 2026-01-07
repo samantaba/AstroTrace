@@ -1,71 +1,93 @@
-# Open-Source SDR Tool v1
+# AstroTrace
 
-This project is an open-source Software Defined Radio (SDR) receiver and scanner tool. It provides a full-featured SDR application with a cross-platform GUI and introduces advanced capabilities like autonomous frequency scanning and AI-driven speech-to-text transcription of received signals.
+**SDR receiver & scanner with AI assist, Whisper STT, SigMF logging, audio playback, and plugin-friendly UI.**
 
-## Features
+![AstroTrace Logo](docs/logo.png "AstroTrace") <!-- replace path if needed -->
 
-- **Cross-Platform GUI:** Runs on Windows, Linux, macOS (PyQt5). Connect to popular SDR hardware (RTL-SDR, etc.) via SoapySDR or RTL-SDR libraries.  
-- **Real-Time Spectrum & Waterfall:** Visualize the radio spectrum in real time. Tune frequency, adjust gain and modulation (AM/FM/SSB/CW) with instant feedback.  
-- **DSP Controls:** Set filter bandwidth, squelch level to suppress noise, and enable noise reduction. Record audio from received signals.  
-- **Manual Mode:** Tune to a specific frequency and listen/record as with a standard receiver.  
-- **Autonomous Scanning Mode:** Define a range or list of frequencies to continuously scan. The tool automatically finds active signals and stops on active channels.  
-- **Auto Signal Detection:** Uses a configurable threshold (squelch) to detect when a channel is active. Avoids false alarms by ignoring random spikes.  
-- **Signal Logging:** When an active transmission is detected, the tool logs the event with timestamp and frequency (and optional user-defined labels for known frequencies).  
-- **Audio Recording:** Active transmissions can be automatically recorded to audio files for later playback.  
-- **AI Speech-to-Text (Transcription):** Demodulated voice audio is fed to an integrated Whisper AI engine to transcribe speech. The text is displayed live and saved to the log, enabling quick review and search through communications.  
-- **Event Log Export:** All detected events (time, frequency, transcribed text) are saved to a log file (CSV format). This can be analyzed or filtered externally as needed.  
-- **Frequency Presets & Favorites:** Save favorite frequencies or scanning ranges for quick access. (Configuration can be done via a simple UI or config file in v1.)  
-- **Modular Design:** The system is built in a modular way – hardware interface, signal processing, scanning logic, transcription, and UI are separate components. This makes it easier to maintain and extend (e.g., adding new demodulation modes or integrating digital decoders in future).  
-- **Extensible and Future-Proof:** Designed with future enhancements in mind. For example, cloud connectivity (for remote control or cloud-based processing) can be added without major changes. Performance-critical portions can be optimized or rewritten in lower-level languages (C++/Go) for a commercial-grade version, thanks to clear abstraction boundaries between components.
+## Overview
+AstroTrace is a cross-platform (macOS/Linux/Windows) SDR desktop app built with PyQt. It:
+- Receives from RTL-SDR/SoapySDR (or synthetic IQ for demos/CI)
+- Demodulates FM/AM (multi-channel helper), plays audio, and shows live spectrum/waterfall
+- Scans ranges with squelch, dwell/hold, auto-logs events, and saves SigMF bundles (IQ + metadata)
+- Optionally transcribes voice via Whisper and lets you control/search via a LangChain agent
+- Ships with a Regression tab to run end-to-end tests (synthetic/RTL/LLM/Whisper)
 
-## Installation
+## Feature Matrix
+| Area | Capabilities |
+| --- | --- |
+| SDR ingest | RTL-SDR, SoapySDR, file (SigMF), synthetic |
+| Demod | FM, AM (multi-channel helper), audio playback |
+| Visualization | Spectrum (filled + peak), Waterfall (plasma gradient, full-height seed) |
+| Scanning | Dwell/hold, squelch, auto-detect, bundles per event |
+| Logging | CSV/JSONL logs + SigMF bundle (IQ + meta + hashes) |
+| AI/LLM | Whisper STT (optional), LangChain agent (tune/scan/search/summarize) |
+| Regression | Synthetic/RTL probe, scan power, multi-demod, Whisper/LLM smoke tests |
+| Plugins | Playbooks, Summaries, Regression runner; extensible plugin loader |
 
-### macOS (zsh) — fastest way to **launch the UI**
+## Quick Start
+1. Clone and create a venv:
+   ```bash
+   git clone <repo_url> astrotrace
+   cd astrotrace
+   python3 -m venv .venv
+   source .venv/bin/activate
+   python -m pip install --upgrade pip
+   pip install -r requirements.txt
+   ```
+2. (macOS, optional) Install SDR libs/drivers:
+   ```bash
+   brew install rtl-sdr soapysdr portaudio  # portaudio only if you want PyAudio
+   ```
+3. Run the app:
+   ```bash
+   python main.py
+   ```
+4. No hardware? Set source to `synthetic` in the UI and click Start to see spectrum/waterfall and hear test bursts.
 
-System dependencies (Qt + audio/transcription tooling). On macOS, `PyQt5` wheels already bundle Qt, but installing Qt tools via Homebrew can help avoid plugin/runtime issues:
+Audio playback: works if `sounddevice` is present (`pip install sounddevice cffi`). PyAudio is optional and needs portaudio headers.
 
+## Enabling AI/LLM
+Set your OpenAI key before launch:
 ```bash
-brew install qt ffmpeg
+export OPENAI_API_KEY="sk-..."
+```
+Then in the UI you can chat with the agent (tune/scan/search/summarize). Whisper transcription can be toggled per run; first model load may take time.
+
+## Regression Tests
+- UI: open the “Regression” tab, choose RTL or synthetic, click “Run regression.” Reports land in `test_reports/`.
+- CLI: `python -m astrotrace.tests.runner` (uses synthetic if RTL is absent).
+- Scenarios: synthetic scan + SigMF bundle, agent tools, RTL probe/scan, multi-demod, Whisper availability (if installed), LLM agent (if `OPENAI_API_KEY` is set). LLM/Whisper scenarios are skipped if unavailable.
+
+## Common Presets (manual today)
+- FM broadcast: 88–108 MHz, FM, step 0.2 MHz
+- Airband: 118–137 MHz, AM, step 0.025 MHz
+- UHF CB (example): 476–478 MHz, NFM, step 0.0125 MHz
+(Enter these in scan controls; a Quick Scan preset button is planned.)
+
+## Project Structure
+```
+core/              scanner, agent, logger, audio_out, sigmf, vector store
+SDR/               sdr_ingest, signal_processing
+ui/                main_window, widgets, plugin loader
+plugins/           playbooks, summaries, regression tab
+astrotrace/tests/  regression runner (synthetic/RTL/LLM/Whisper)
+runs/, runs_tests/ SigMF bundles (gitignored)
+test_reports/      Regression outputs (gitignored)
 ```
 
-Create and activate a virtualenv, then install the **UI-only** Python deps:
+## Roadmap (short)
+- More demod/decoders (DMR/P25/etc.)
+- Quick Scan presets in UI
+- CI for synthetic regression (GitHub Actions included)
 
-```bash
-cd /Users/samantaba/Documents/projects/astrotrace
+## License
+MIT License (see LICENSE).
 
-python3 -m venv .venv
-source .venv/bin/activate
+## Contributing
+PRs welcome. Please:
+- Run regression tests (synthetic) before submitting
+- Keep plugins isolated (see `core/plugins.py`)
+- Avoid committing `runs/` or `test_reports/`
 
-python -m pip install --upgrade pip
-pip install -r requirements-ui.txt
-```
-
-Launch the UI:
-
-```bash
-python main.py
-```
-
-Tip: if you don’t have SDR hardware/drivers set up yet, set **Source = `synthetic`** in the UI and click Start to see the spectrum/waterfall update.
-
-### Full install (includes SDR + transcription + LangChain)
-
-```bash
-cd /Users/samantaba/Documents/projects/astrotrace
-source .venv/bin/activate
-pip install -r requirements.txt
-```
-
-Notes:
-- **SoapySDR on macOS**: `SoapySDR` is installed via Homebrew (not pip) in many setups:
-
-```bash
-brew install soapysdr
-```
-
-- **RTL-SDR support**: you may also need RTL-SDR system drivers/libraries (`librtlsdr`) depending on your setup.
-- **LangChain LLM**: the app has an offline fallback; to enable the chat agent with OpenAI, set:
-
-```bash
-export OPENAI_API_KEY="your_key_here"
-```
+## Support
+Issues/PRs on GitHub. For audio: ensure `sounddevice` is installed; for RTL: verify `rtl_test -t` works; for LLM/Whisper: set `OPENAI_API_KEY`.
