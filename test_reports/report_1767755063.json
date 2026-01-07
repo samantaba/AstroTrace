@@ -1,0 +1,39 @@
+{
+  "results": [
+    {
+      "events": 0,
+      "bundle_found": true,
+      "squelch_db": -80.0,
+      "passed": false,
+      "name": "synthetic_scan"
+    },
+    {
+      "passed": true,
+      "reply_logs": "t 100.000 MHz: hello",
+      "reply_search": "Agent offline (no LLM configured).",
+      "name": "agent_responses"
+    },
+    {
+      "passed": true,
+      "power": 0.09738846868276596,
+      "name": "rtl_probe"
+    },
+    {
+      "passed": false,
+      "samples_seen": 0,
+      "max_power_db": null,
+      "name": "rtl_scan_power"
+    },
+    {
+      "name": "multi_demod",
+      "passed": false,
+      "error": "ChannelConfig.__init__() got an unexpected keyword argument 'offset_hz'"
+    }
+  ],
+  "passed": false,
+  "duration_sec": 18.027238130569458,
+  "timestamp": 1767755063.5779572,
+  "overrides": {
+    "squelch_db": -90.0
+  }
+}

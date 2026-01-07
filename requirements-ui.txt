@@ -1,0 +1,10 @@
+numpy
+PyQt5
+pyqtgraph
+
+# "Nice to have" for the chat panel + transcript search (still runs without an API key)
+langchain
+langchain-community
+faiss-cpu
+tiktoken
+

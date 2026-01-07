@@ -1,0 +1,20 @@
+numpy
+PyQt5
+pyqtgraph
+
+# SDR backends (optional; UI can still launch without hardware support)
+pyrtlsdr
+# NOTE: `SoapySDR` is not distributed on PyPI for macOS in many environments.
+# Install SoapySDR via Homebrew on macOS instead (see README).
+SoapySDR; platform_system != "Darwin"
+
+# Transcription (expects the `whisper` Python module)
+openai-whisper
+
+# LangChain (optional; app has offline fallback if no LLM configured)
+langchain
+langchain-community
+faiss-cpu
+tiktoken
+
+#Note: In addition to the above Python packages, you may need to have the proper drivers installed for your SDR hardware. For example, pyrtlsdr requires the librtlsdr library (which is typically installed on your system when you install software like RTL-SDR drivers). The Whisper package will also require FFmpeg for audio processing. Ensure these system dependencies are set up.

@@ -1,0 +1,21 @@
+{
+  "event": {
+    "path": "runs/2026-01-07_190644_86.700MHz/event.json",
+    "sha256": "fbf5d3a05d8914944cf24e29fd4c27458caab98a0c93394d285338966763cad9"
+  },
+  "meta": {
+    "sample_rate_hz": 2400000.0,
+    "center_freq_hz": 86700000.0,
+    "mode": "FM"
+  },
+  "artifacts": [
+    {
+      "path": "runs/2026-01-07_190644_86.700MHz/capture.sigmf-data",
+      "sha256": "04ff4bea910730af081dd9a9c7a6199eeccdb7133e702a99e1f49032c9d77edf"
+    },
+    {
+      "path": "runs/2026-01-07_190644_86.700MHz/capture.sigmf-meta",
+      "sha256": "70d28295e7995f2da0265f649a1f932cb95c7decee0e9afc709fd218f0c94eb5"
+    }
+  ]
+}

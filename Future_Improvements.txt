@@ -1,0 +1,29 @@
+Future Improvements
+Cloud Integration: Future versions may allow optional cloud processing (for example, offloading heavy AI tasks or sharing logs in real-time to a web dashboard). The architecture is ready for this; modules like transcriber can be swapped to use cloud APIs easily.
+Additional Demodulators: Support for more modulation types (digital modes like ADS-B, AIS, etc.) can be added. The modular DSP core allows adding these without affecting the rest of the system.
+Multi-channel Concurrent Reception: In the current version, scanning is sequential. In future, if hardware bandwidth permits, we might capture a wide band and digitally filter multiple channels simultaneously for truly concurrent multi-frequency monitoring. The framework could handle multiple parallel Scanner threads or processes feeding a common log.
+Performance Optimizations: Critical loops (like signal detection or audio decoding) might be moved into C++ or use GPU acceleration. We will monitor performance in v1; if CPU usage is high, we might implement these optimizations sooner (possibly by v2).
+UI Enhancements: Improvements like waterfall color customization, better frequency managers, and integration with online frequency databases (to auto-label known channels) are planned.
+
+Modularity and cloud readiness
+Hardware ingestion is abstracted (RTL/Soapy/File); can slot higher-end devices later.
+DSP uses a demod factory; can swap/extend demods or add classification without breaking UI/scan logic.
+Scanner runs threaded, emits signals/events decoupled from UI; ready for headless/remote runners.
+Logging and bundles are structured (CSV/JSONL + SigMF); cloud syncing or APIs can be layered on without refactoring core capture.
+Agent layer is tool-driven (LangChain) and can swap to cloud LLMs or local models as needed.
+UI is widgetized; additional panels (alerts, multi-VFO, dashboards) can be added in a pro build.
+What to defer to commercial/cloud version (and why)
+Advanced classifiers/decoders (DMR/P25/ADS-B/ACARS, auto-modulation ID): heavier dependencies/licensing and GPU/optimized DSP; better in pro.
+Cloud control/streaming and multi-user collaboration: needs auth, rate limits, storage, secure transport.
+Fleet/remote monitoring (e.g., aircraft or distributed stations): needs remote device management, health checks, OTA updates.
+Cognitive/active behaviors (frequency agility, transmit): regulatory-sensitive; keep out of OSS core.
+High-throughput optimizations (GPU FFTs, SIMD, large bandwidth): engineering effort better spent in commercial tier.
+Industries/use-cases to target
+Spectrum monitoring and compliance (regulators, enterprises).
+Public safety/utility monitoring (where legal) with transcription/search.
+RF QA and manufacturing test (record/playback, headless benchmarking).
+Academic/research (communications, DSP, SETI triage).
+Aerospace/defense labs (receive-only triage; future pro for classified/secure deployments).
+Maritime/aviation hobbyist and ops (receive-only logging; pro for decoding services where lawful).
+IoT/industrial: site RF scans, interference hunting.
+Advanced decoders, cloud collaboration, remote/fleet control, and high-performance pipelines should be added later in the commercial build to keep OSS lean and compliance-friendly.

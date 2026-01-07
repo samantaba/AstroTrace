@@ -1,0 +1,20 @@
+{
+  "global": {
+    "version": "0.0.1",
+    "core:datatype": "cf32_le",
+    "core:sample_rate": 2400000.0,
+    "core:frequency": 87050000.0,
+    "core:description": "AstroTrace event capture",
+    "core:author": "AstroTrace",
+    "core:datetime": "2026-01-07T08:06:50.966665+00:00",
+    "core:mode": "FM"
+  },
+  "captures": [
+    {
+      "core:sample_start": 0,
+      "core:frequency": 87050000.0,
+      "core:datetime": "2026-01-07T08:06:50.966665+00:00"
+    }
+  ],
+  "annotations": []
+}
