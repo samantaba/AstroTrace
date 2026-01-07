@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+
+# Environments
+.venv
+env/
+venv/
+.env
+
+# Editor/OS
+.DS_Store
+.idea/
+.vscode/
+
+# Runtime artifacts
+runs/
+test_reports/
+logs/
+*.log
+
+# Build/dist
+build/
+dist/
+*.egg-info/
+
+.venv/
+__pycache__/
+*.pyc
+runs/
+runs_tests/
+test_reports/
+.DS_Store
+
