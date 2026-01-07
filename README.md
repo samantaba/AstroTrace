@@ -89,5 +89,10 @@ PRs welcome. Please:
 - Keep plugins isolated (see `core/plugins.py`)
 - Avoid committing `runs/` or `test_reports/`
 
+## Maintainer
+**Saman Tabatabaeian**  
+Email: <saman.tabatabaeian@gmail.com>  
+LinkedIn: [samantabatabaeian](https://www.linkedin.com/in/samantabatabaeian/)
+
 ## Support
 Issues/PRs on GitHub. For audio: ensure `sounddevice` is installed; for RTL: verify `rtl_test -t` works; for LLM/Whisper: set `OPENAI_API_KEY`.
