@@ -2,8 +2,8 @@
 
 **SDR receiver & scanner with AI assist, Whisper STT, SigMF logging, audio playback, and plugin-friendly UI.**
 
-![AstroTrace Logo](docs/logo.png "AstroTrace") <!-- replace path if needed -->
-
+![AstroTrace Logo](docs/logo.png) <!-- replace path if needed -->
+![AstroTrace app](docs/app.png)
 ## Overview
 AstroTrace is a cross-platform (macOS/Linux/Windows) SDR desktop app built with PyQt. It:
 - Receives from RTL-SDR/SoapySDR (or synthetic IQ for demos/CI)
